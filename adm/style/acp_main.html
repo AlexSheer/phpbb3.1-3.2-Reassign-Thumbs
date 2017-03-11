@@ -1,0 +1,18 @@
+<!-- INCLUDE overall_header.html -->
+
+<h1>{L_ACP_REASSIGN_THUMBS}</h1>
+{IMAGES}<br />
+<form action="{S_REASSIGN_THUMBS_ACTION}" method="post">
+	<fieldset>
+		<legend>{L_ACP_REASSIGN_THUMBS}</legend>
+	<dl>
+		<dt><label for="">{L_TOOLS_IMAGES_PER_CYCLE}:</label></dt>
+		<dd><input class="post" type="text" maxlength="12" size="12" name="limit" value="{CYCLE}" /></dd>
+	</dl>
+	<p class="submit-buttons">
+		<input class="button1" type="submit" id="submit" name="submit" value="{L_REBUILT_THUMB}" />&nbsp;
+	</p>
+	</fieldset>
+</form>
+
+<!-- INCLUDE overall_footer.html -->

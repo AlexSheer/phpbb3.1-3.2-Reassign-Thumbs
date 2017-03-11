@@ -1,0 +1,8 @@
+services:
+    sheer.reassign_thumbs.listener:
+        class: sheer\reassign_thumbs\event\listener
+        arguments:
+            - %core.root_path%
+            - @template
+        tags:
+            - { name: event.listener }

@@ -60,8 +60,11 @@ class main_module
 			$contents = substr($contents, 0, -1);
 			@fclose($fp);
 			@unlink($log_file);
-			$sql = 'UPDATE ' . ATTACHMENTS_TABLE . ' SET thumbnail = 1 WHERE attach_id IN (' . $contents . ')';
-			$db->sql_query($sql);
+			if ($contents)
+			{
+				$sql = 'UPDATE ' . ATTACHMENTS_TABLE . ' SET thumbnail = 1 WHERE attach_id IN (' . $contents . ')';
+				$db->sql_query($sql);
+			}
 			trigger_error($user->lang['REBUILD_THUMBNAILS_COMPLETE'] . adm_back_link(append_sid("{$phpbb_root_path}adm/index.$phpEx", "i=-sheer-reassign_thumbs-acp-main_module")));
 		}
 		else if (!$images && $start == 0)
@@ -76,15 +79,25 @@ class main_module
 			//Make Sure The File Actually Exists Before Processing It
 			if (file_exists($upload_path . $images[$i]['physical_filename']))
 			{
-				create_thumbnail($upload_path . $images[$i]['physical_filename'], $upload_path . $thumb_file_name, $images[$i]['mimetype']);
-				$output[] = $user->lang['REBUILT'] . $images[$i]['physical_filename'] . ' ' . $user->lang['THUMB'] . ' '. $thumb_file_name;
-				$thumbs[] = $images[$i]['attach_id'];
+				if (create_thumbnail($upload_path . $images[$i]['physical_filename'], $upload_path . $thumb_file_name, $images[$i]['mimetype']))
+				{
+					$output[] = $user->lang['REBUILT'] . $images[$i]['physical_filename'] . ' ' . $user->lang['THUMB'] . ' '. $thumb_file_name;
+					$thumbs[] = $images[$i]['attach_id'];
+				}
+				else
+				{
+					$output[] = $user->lang['NO_NEED_REBUILT'] . $images[$i]['physical_filename'];
+				}
 			}
 			else
 			{
 				$output[] = $user->lang['SOURCE_UNAVAILABLE'] . $images[$i]['physical_filename'];
 			}
 			$done++;
+		}
+		if (!isset($thumbs))
+		{
+			$thumbs = array();
 		}
 		$this->write_logfile ($upload_path, $thumbs);
 		//Add The Status Message
